@@ -21,7 +21,7 @@ server.use("/api/plants", authMiddleware, plantsRouter);
 
 // Test Endpoint
 server.get("/", (req, res) => {
-    res.status(200).json({ api: "up" });
+  res.status(200).json({ api: "up" });
 });
 
 module.exports = server;
