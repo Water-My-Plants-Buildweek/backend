@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
-const authMiddleware = require("../auth/authMiddleware");
+const authMiddleware = require("../auth/authMiddleware.js");
 
 // Server Creation
 const server = express();
@@ -14,10 +14,10 @@ server.use(helmet());
 server.use(express.json());
 
 // Custom Routers
-const authRouter = require("../auth/authRouter.js");
+// const authRouter = require("../auth/authRouter.js");
 const plantsRouter = require("../plants/plantRouter.js");
-server.use("/api/auth", authRouter);
-server.use("/api/plants", authMiddleware, plantsRouter);
+// server.use("/api/auth", authRouter);
+server.use("/api/plants", plantsRouter);
 
 // Test Endpoint
 server.get("/", (req, res) => {
