@@ -17,7 +17,7 @@ server.use(express.json());
 const authRouter = require("../auth/authRouter.js");
 const plantsRouter = require("../plants/plantRouter.js");
 server.use("/api/auth", authRouter);
-server.use("/api/plants", authMiddleware, plantsRouter);
+server.use("/api/plants", plantsRouter);
 
 // Test Endpoint
 server.get("/", (req, res) => {
