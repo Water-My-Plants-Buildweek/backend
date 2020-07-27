@@ -17,11 +17,11 @@ server.use(express.json());
 const authRouter = require("../auth/authRouter.js");
 const plantsRouter = require("../plants/plantRouter.js");
 server.use("/api/auth", authRouter);
-server.use("/api/plants", authMiddleware, plantsRouter);
+// server.use("/api/plants", authMiddleware, plantsRouter);
 
 // Test Endpoint
 server.get("/", (req, res) => {
-    res.status(200).json({ api: "up" });
+  res.status(200).json({ api: "up" });
 });
 
 module.exports = server;
