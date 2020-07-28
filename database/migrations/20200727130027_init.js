@@ -12,6 +12,7 @@ exports.up = function (knex) {
       plants.string("nickname", 255).notNullable();
       plants.string("species", 255).notNullable();
       plants.integer("h2ofrequency", 10).notNullable();
+      plants.string("imageURL", 255);
     });
 };
 
