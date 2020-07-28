@@ -1,3 +1,7 @@
+Water My Plant API
+
+Base URL: https://water-my-pants.herokuapp.com/
+
 Endpoints
 
 | Request | URL                | Description                 |
