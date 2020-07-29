@@ -1,10 +1,11 @@
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const secrets = require("./secrets");
-const authenticator = require("./authenticator");
+// const secrets = require("./secrets");
+// const authenticator = require("./authenticator");
 const Users = require("./usersModel");
+// const { update } = require("./usersModel");
 const { isValid } = require("./authService");
-const db = require("../database/dbConfig");
+// const db = require("../database/dbConfig");
 
 const router = require("express").Router();
 
@@ -16,33 +17,30 @@ router.get("/", (req, res) => {
     .catch((err) => res.send(err));
 });
 
-router.put("/user", userValidation, authenticator, (req, res) => {
-  const credentials = req.body;
-  const { username } = jwt.verify(req.headers.authorization, secrets.secret);
-  db("users")
-    .select("username")
-    .where({ username: username })
-    .first()
-    .then((id) => {
-      credentials.password = bcrypt.hashSync(credentials.password, 10);
-      db("users")
-        .update(credentials)
-        .where(username)
-        .then((data) => {
-          data
-            ? res.status(201).json({ message: "User updated succesfully" })
-            : res.status(500).json({ message: "User couldnt be updated" });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json({ message: "Error updating user" });
-        });
-    });
-});
+// router.put("/:id", (req, res) => {
+//   const id = req.params.id;
+//   const changes = req.body;
 
-// router.put("/user", userValidation, authenticator, (req, res) => {
-//   const { username, password } = req.body;
-
+//   Users.findById(id).then((user) => {
+//     if (user) {
+//       if (update(changes)) {
+//         Users.update(changes)
+//           .then((updatedInfo) => {
+//             res.status(201).json({ updatedInfo });
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//             res.status(500).json({
+//               message: "User info did not update",
+//             });
+//           });
+//       } else {
+//         res.status(404).json({
+//           message: "Please be sure to fill correctly",
+//         });
+//       }
+//     }
+//   });
 // });
 
 router.post("/register", (req, res) => {
@@ -98,14 +96,42 @@ router.post("/login", (req, res) => {
   }
 });
 
-function userValidation(req, res, next) {
-  if (!req.body.username || !req.body.password) {
-    res.status(403).send({
-      message: "Validation Error, userame or passord is incorrect",
-    });
+router.put("/user/:id", (req, res) => {
+  const id = req.params.id;
+  const changes = req.body;
+  if (changes.password) {
+    const rounds = process.env.BCRYPT_ROUNDS || 8;
+
+    const hash = bcryptjs.hashSync(changes.password, rounds);
+
+    changes.password = hash;
   }
-  next();
-}
+  Users.findById(id)
+    .then((user) => {
+      if (user) {
+        Users.update(id, changes)
+          .then((updateUser) => {
+            res.status(200).json({ updateUser });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+              message: "Sorry, could not update user in database, API error",
+            });
+          });
+      } else {
+        res.status(404).json({
+          message: "Please be sure to fill out all user requirements",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "did not work",
+      });
+    });
+});
 
 function createToken(user) {
   const payload = {
