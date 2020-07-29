@@ -18,18 +18,19 @@ Table Requirements
 
 Users
 
-| Name         | Type    | Required | Unique | Notes                     |
-| ------------ | ------- | -------- | ------ | ------------------------- |
-| id           | integer | yes      | yes    | users id (auto generated) |
-| username     | string  | yes      | yes    | users username            |
-| password     | string  | yes      | no     | users password            |
-| phone-number | string  | no       | yes    | users phone-number        |
+| Name     | Type    | Required | Unique | Notes                     |
+| -------- | ------- | -------- | ------ | ------------------------- |
+| id       | integer | yes      | yes    | users id (auto generated) |
+| username | string  | yes      | yes    | users username            |
+| password | string  | yes      | no     | users password            |
+| phone    | string  | no       | yes    | users phone-number        |
 
 Plants
 
-| Name            | Type    | Required | Unique | Notes                      |
-| --------------- | ------- | -------- | ------ | -------------------------- |
-| id              | integer | yes      | yes    | plants id (auto generated) |
-| nickname        | string  | yes      | no     | plants nickname            |
-| species         | string  | yes      | no     | plants species             |
-| water-frequency | integer | yes      | no     | plants water frequency     |
+| Name         | Type    | Required | Unique | Notes                      |
+| ------------ | ------- | -------- | ------ | -------------------------- |
+| id           | integer | yes      | yes    | plants id (auto generated) |
+| nickname     | string  | yes      | no     | plants nickname            |
+| species      | string  | yes      | no     | plants species             |
+| h2oFrequency | integer | yes      | no     | plants water frequency     |
+| image url    | string  | no       | no     | plants picture             |
