@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs")
 
 exports.seed = function (knex) {
   const users = [
@@ -14,6 +14,6 @@ exports.seed = function (knex) {
       username: "Admin",
       password: bcrypt.hashSync("thisIsOurSecret", 10),
     },
-  ];
-  return knex("users").insert(users);
-};
+  ]
+  return knex("users").insert(users)
+}
