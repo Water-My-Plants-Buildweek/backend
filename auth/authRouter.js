@@ -19,15 +19,15 @@ router.get("/", (req, res) => {
 router.put("/user", userValidation, authenticator, (req, res) => {
   const credentials = req.body;
   const { username } = jwt.verify(req.headers.authorization, secrets.secret);
-  db("Users")
-    .select("id")
+  db("users")
+    .select("username")
     .where({ username: username })
     .first()
     .then((id) => {
       credentials.password = bcrypt.hashSync(credentials.password, 10);
-      db("Users")
+      db("users")
         .update(credentials)
-        .where(id)
+        .where(username)
         .then((data) => {
           data
             ? res.status(201).json({ message: "User updated succesfully" })
@@ -39,6 +39,11 @@ router.put("/user", userValidation, authenticator, (req, res) => {
         });
     });
 });
+
+// router.put("/user", userValidation, authenticator, (req, res) => {
+//   const { username, password } = req.body;
+
+// });
 
 router.post("/register", (req, res) => {
   const credentials = req.body;
