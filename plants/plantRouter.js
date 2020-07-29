@@ -80,29 +80,40 @@ router.put('/:id', async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: "Failed to update plant" })
-
   }
 })
 
-router.delete("/:id", (req, res) => {
+// router.delete("/:id", (req, res) => {
+//   const { id } = req.params
+
+//   Plants.remove(id)
+//     .then((deleted) => {
+//       if (deleted) {
+//         res.json({
+//           removed: deleted,
+//           message: "successfully deleted plant!",
+//         })
+//       } else {
+//         res.status(404).json({
+//           message: "Could not find plant with given id",
+//         })
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(500).json({ message: "Failed to delete plant" })
+//     })
+// })
+
+router.delete('/:id', async (req, res) => {
   const { id } = req.params
 
-  Plants.remove(id)
-    .then((deleted) => {
-      if (deleted) {
-        res.json({
-          removed: deleted,
-          message: "successfully deleted plant!",
-        })
-      } else {
-        res.status(404).json({
-          message: "Could not find plant with given id",
-        })
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ message: "Failed to delete plant" })
-    })
+  try {
+    await Plants.remove(id)
+    const newPlants = await Plants.find()
+    res.json(newPlants)
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete plant" })
+  }
 })
 
 module.exports = router
