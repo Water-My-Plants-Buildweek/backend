@@ -1,10 +1,12 @@
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const router = require("express").Router();
-
+const secrets = require("./secrets");
+const authenticator = require("./authenticator");
 const Users = require("./usersModel");
 const { isValid } = require("./authService");
+const db = require("../database/dbConfig");
+
+const router = require("express").Router();
 
 router.get("/", (req, res) => {
   Users.find()
@@ -12,6 +14,30 @@ router.get("/", (req, res) => {
       res.status(200).json({ users, jwt: req.jwt });
     })
     .catch((err) => res.send(err));
+});
+
+router.put("/user", userValidation, authenticator, (req, res) => {
+  const credentials = req.body;
+  const { username } = jwt.verify(req.headers.authorization, secrets.secret);
+  db("Users")
+    .select("id")
+    .where({ username: username })
+    .first()
+    .then((id) => {
+      credentials.password = bcrypt.hashSync(credentials.password, 10);
+      db("Users")
+        .update(credentials)
+        .where(id)
+        .then((data) => {
+          data
+            ? res.status(201).json({ message: "User updated succesfully" })
+            : res.status(500).json({ message: "User couldnt be updated" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ message: "Error updating user" });
+        });
+    });
 });
 
 router.post("/register", (req, res) => {
@@ -66,6 +92,15 @@ router.post("/login", (req, res) => {
     });
   }
 });
+
+function userValidation(req, res, next) {
+  if (!req.body.username || !req.body.password) {
+    res.status(403).send({
+      message: "Validation Error, userame or passord is incorrect",
+    });
+  }
+  next();
+}
 
 function createToken(user) {
   const payload = {
