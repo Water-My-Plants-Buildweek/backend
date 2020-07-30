@@ -6,6 +6,7 @@ module.exports = {
   findBy,
   findById,
   remove,
+  update,
 }
 
 function find() {
@@ -34,3 +35,13 @@ function findById(id) {
 function remove(id) {
   return db("users").where({ id }).del()
 }
+
+// function update(requirements) {
+//   return Boolean(requirements.username && requirements.password);
+// }
+
+function update(id, { username, password, phone }) {
+  return db("users").where({ id }).update({ username, password, phone })
+}
+
+//testing
