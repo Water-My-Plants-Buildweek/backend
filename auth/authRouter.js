@@ -17,31 +17,33 @@ router.get("/", (req, res) => {
     .catch((err) => res.send(err));
 });
 
-// router.put("/:id", (req, res) => {
-//   const id = req.params.id;
-//   const changes = req.body;
+router.get("/userinfo", (req, res) => {
+  const { username, phone } = req.body;
 
-//   Users.findById(id).then((user) => {
-//     if (user) {
-//       if (update(changes)) {
-//         Users.update(changes)
-//           .then((updatedInfo) => {
-//             res.status(201).json({ updatedInfo });
-//           })
-//           .catch((err) => {
-//             console.log(err);
-//             res.status(500).json({
-//               message: "User info did not update",
-//             });
-//           });
-//       } else {
-//         res.status(404).json({
-//           message: "Please be sure to fill correctly",
-//         });
-//       }
-//     }
-//   });
-// });
+  if (isValid(req.body)) {
+    Users.findBy({ "u.username": username, "p.phone": phone })
+      .then(([user]) => {
+        if (user && bcryptjs.compareSync(password, user.password)) {
+          const token = createToken(user);
+
+          res.status(200).json({
+            message: `${user.username},`,
+            token,
+          });
+        } else {
+          res.status(401).json({ message: "Invalid credentials" });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({ message: error.message });
+      });
+  } else {
+    res.status(400).json({
+      message:
+        "please provide username and password and the passwrod should be alphanuemric",
+    });
+  }
+});
 
 router.post("/register", (req, res) => {
   const credentials = req.body;
@@ -79,6 +81,7 @@ router.post("/login", (req, res) => {
 
           res.status(200).json({
             message: `Welcome ${user.username}`,
+            id: `${user.id}`,
             token,
           });
         } else {
